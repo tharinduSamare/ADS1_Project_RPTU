@@ -534,7 +534,7 @@ class WBBarrier extends Module {
 // Main Class
 // -----------------------------------------
 
-class HazardDetectionRV32Icore (BinaryFile: String) extends Module {
+class PipelinedRV32Icore (BinaryFile: String) extends Module {
   val io = IO(new Bundle {
     val check_res = Output(UInt(32.W))
   })
