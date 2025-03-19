@@ -99,6 +99,10 @@ class TwoWayBTB_model #(int NSETS = 8);
     Way_model #(.NSETS(NSETS))way[2];
     LRU_model lru;
 
+    bit LRU_update_readOp = 0;
+    bit LRU_update_readOp_way;
+    bit [SET_BITS-1:0] LRU_update_readOp_set;
+
     function new();
         for(int i=0; i<2; i++) begin
             way[i] = new(.way_id(i));
@@ -123,17 +127,27 @@ class TwoWayBTB_model #(int NSETS = 8);
             target = w_target[0];
             predictTaken = w_predicate[0];
             lru.update_LRU_array(.way(0), .set(PC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET]));
+
+            LRU_update_readOp = 1'b1;
+            LRU_update_readOp_set = PC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET];
+            LRU_update_readOp_way = 1'b0;
         end
         else if (w_readHit[1]) begin
             valid = 1'b1;
             target = w_target[1];
             predictTaken = w_predicate[1];
             lru.update_LRU_array(.way(1), .set(PC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET]));
+
+            LRU_update_readOp = 1'b1;
+            LRU_update_readOp_set = PC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET];
+            LRU_update_readOp_way = 1'b1;
         end
         else begin
             valid = 1'b0;
             target = '0;
             predictTaken = 1'b0;
+
+            LRU_update_readOp = 1'b0;
         end
     endfunction
 
@@ -159,6 +173,10 @@ class TwoWayBTB_model #(int NSETS = 8);
             end
             way[replace_way].write(.updatePC(updatePC), .updateTarget(updateTarget), .mispredicted(mispredicted));
             // print_BTB();
+
+            if (!(LRU_update_readOp && (LRU_update_readOp_set == updatePC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET]) && (LRU_update_readOp_way == replace_way))) begin //if read operation has already updated LRU to the same set & way, skip updating LRU again.
+                update_LRU_array(.way(replace_way), .set(updatePC[SET_BITS+BYTE_OFFSET-1:BYTE_OFFSET]));
+            end
         end
     endfunction
 
