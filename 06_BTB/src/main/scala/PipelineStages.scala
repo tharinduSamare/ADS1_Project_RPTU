@@ -129,19 +129,24 @@ class MEM extends Module {
     val io = IO(new Bundle {
         val addr = Input(UInt(32.W))
         val writeData = Input(UInt(32.W))
-        val memRd = Input(UInt(1.W))
-        val memWr = Input(UInt(1.W))
+        val memRd = Input(memRdOpT())
+        val memWr = Input(memWrOpT())
         val readData = Output(UInt(32.W))
     })
 
-    val DMem = Mem(4096, UInt(32.W))
+    val DMEM_inst = Module(new DMEM(DEPTH = 4096))
+    val MemController_inst = Module(new MemController)
 
-    when(io.memWr === 1.U){
-        DMem.write(io.addr, io.writeData)
-    }
+    MemController_inst.io.addr := io.addr
+    MemController_inst.io.wrOp := io.memWr
+    MemController_inst.io.wData := io.writeData
+    MemController_inst.io.rdOp := io.memRd
+    MemController_inst.io.mem_rData := DMEM_inst.io.rData
+    io.readData := MemController_inst.io.rData
 
-    when(io.memRd === 1.U){ io.readData := DMem.read(io.addr) }
-    .otherwise{             io.readData := 0.U }
+    DMEM_inst.io.addr := MemController_inst.io.mem_addr
+    DMEM_inst.io.wData := MemController_inst.io.mem_wData
+    DMEM_inst.io.wrEn := MemController_inst.io.mem_wrEn
 
 }
 

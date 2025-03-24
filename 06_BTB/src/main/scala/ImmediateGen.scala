@@ -11,8 +11,8 @@ class ImmediateGen extends Module {
         val imme = Output(UInt(32.W))
     })
 
-    val (opcode, opcode_cast1) = opcodeT.safe(io.instr(6,0))
-    assert(opcode_cast1, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
+    val (opcode, opcode_cast) = opcodeT.safe(io.instr(6,0))
+    assert(opcode_cast, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
 
     val I_imme = Cat(Fill(20, io.instr(31)), io.instr(31,20))
     val S_imme = Cat(Fill(20, io.instr(31)), io.instr(31,25), io.instr(11,7))

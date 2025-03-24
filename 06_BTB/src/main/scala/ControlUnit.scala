@@ -22,13 +22,13 @@ class ControlUnit extends  Module {
         val ALUOp  = Output(ALUOpT())
         val ALUSrcA  = Output(aluOpAPCMux()) // ALU srcA Mux controller
         val ALUSrcB = Output(aluOpBImmMux()) // ALU srcB Mux controller
-        val memRd = Output(UInt(1.W))
-        val memWr = Output(UInt(1.W))
+        val memRd = Output(memRdOpT())
+        val memWr = Output(memWrOpT())
         val memtoReg = Output(UInt(1.W))
     })
 
-    val (opcode, opcode_cast3)  = opcodeT.safe(io.instr(6, 0))
-    assert(opcode_cast3, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
+    val (opcode, opcode_cast)  = opcodeT.safe(io.instr(6, 0))
+    assert(opcode_cast, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
     val funct3  = io.instr(14, 12)
 
     // R-Type
@@ -78,7 +78,27 @@ class ControlUnit extends  Module {
     io.wrEn := (opcode === opcodeT.R_type) || (opcode === opcodeT.I_type) || (opcode === opcodeT.U_type) || (opcode === opcodeT.AU_type) || (opcode === opcodeT.L_type) || (isJump === 1.U)
     io.ALUSrcA := Mux((isPCRelative === 1.U), aluOpAPCMux.PC, aluOpAPCMux.forwardMuxA)
     io.ALUSrcB := Mux((opcode === opcodeT.I_type), aluOpBImmMux.imme, (Mux((isJump === 1.U), aluOpBImmMux.plus4, aluOpBImmMux.forwardMuxB)))
-    io.memRd := (opcode === opcodeT.L_type)
-    io.memWr := (opcode === opcodeT.S_type)
     io.memtoReg := (opcode === opcodeT.L_type)
+
+    io.memRd := memRdOpT.IDLE
+    when(opcode === opcodeT.L_type){
+        switch(funct3){
+            is("b000".U) {io.memRd := memRdOpT.LB}
+            is("b001".U) {io.memRd := memRdOpT.LH}
+            is("b010".U) {io.memRd := memRdOpT.LW}
+            is("b100".U) {io.memRd := memRdOpT.LBU}
+            is("b101".U) {io.memRd := memRdOpT.LHU}
+        }
+    }
+    .otherwise{io.memRd := memRdOpT.IDLE}
+
+    io.memWr := memWrOpT.IDLE
+    when(opcode === opcodeT.S_type){
+        switch(funct3){
+            is("b000".U) {io.memWr := memWrOpT.SB}
+            is("b001".U) {io.memWr := memWrOpT.SH}
+            is("b010".U) {io.memWr := memWrOpT.SW}
+        }
+    }
+    .otherwise{io.memWr := memWrOpT.IDLE}
 }

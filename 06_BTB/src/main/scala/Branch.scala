@@ -20,10 +20,10 @@ class BranchCheck extends Module{
         val PC_JB = Output(UInt(32.W))
     })
 
-    val (opcode, opcode_cast4) = opcodeT.safe(io.instr(6,0))
-    val (branch_func3, func3_cast1) = branchT.safe(io.instr(14,12))
-    assert(opcode_cast4, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
-    assert(func3_cast1, "Opcode must be a valid one, got 0x%x.", io.instr(14,12))
+    val (opcode, opcode_cast) = opcodeT.safe(io.instr(6,0))
+    val (branch_func3, func3_cast) = branchT.safe(io.instr(14,12))
+    assert(opcode_cast, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
+    assert(func3_cast, "Opcode must be a valid one, got 0x%x.", io.instr(14,12))
 
     val branch_condition = Wire(UInt(1.W))
 

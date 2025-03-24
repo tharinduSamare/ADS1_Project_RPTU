@@ -25,8 +25,8 @@ class ForwardingUnit extends Module {
         val aluOpB_ctrl = Output(aluOpBMux())
     })
 
-    val (opcode, opcode_cast5)  = opcodeT.safe(io.instr(6, 0))
-    assert(opcode_cast5, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
+    val (opcode, opcode_cast)  = opcodeT.safe(io.instr(6, 0))
+    assert(opcode_cast, "Opcode must be a valid one, got 0x%x.", io.instr(6,0))
 
     /*
         Hazard detetction logic:

@@ -69,8 +69,8 @@ class PipelinedRV32Icore (BinaryFile: String) extends Module {
     IDBarrier.io.inALUOp      := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), ALUOpT.invalid, ControlUnit_inst.io.ALUOp)
     IDBarrier.io.inAluSrcA    := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), aluOpAPCMux.forwardMuxA, ControlUnit_inst.io.ALUSrcA)
     IDBarrier.io.inAluSrcB    := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), aluOpBImmMux.forwardMuxB, ControlUnit_inst.io.ALUSrcB)
-    IDBarrier.io.inMemRd      := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), 0.U, ControlUnit_inst.io.memRd)
-    IDBarrier.io.inMemWr      := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), 0.U, ControlUnit_inst.io.memWr)
+    IDBarrier.io.inMemRd      := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), memRdOpT.IDLE, ControlUnit_inst.io.memRd)
+    IDBarrier.io.inMemWr      := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), memWrOpT.IDLE, ControlUnit_inst.io.memWr)
     IDBarrier.io.inMemtoReg   := Mux((HazardDetectionUnit_inst.io.id_stall === 1.U), 0.U, ControlUnit_inst.io.memtoReg)
 
     ForwardingUnit_inst.io.rs1_id   := IDBarrier.io.outRS1

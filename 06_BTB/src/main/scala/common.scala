@@ -59,3 +59,11 @@ object aluOpBImmMux extends ChiselEnum {
 object aluOpAPCMux extends ChiselEnum {
     val forwardMuxA, PC = Value
 }
+
+object memWrOpT extends  ChiselEnum {
+    val SB, SH, SW, IDLE = Value
+}
+
+object memRdOpT extends ChiselEnum {
+    val LB, LH, LW, LBU, LHU, IDLE = Value
+}
