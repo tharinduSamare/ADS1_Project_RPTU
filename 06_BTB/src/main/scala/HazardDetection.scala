@@ -28,7 +28,7 @@ class HazardDetectionUnit extends  Module {
     when((opcode === opcodeT.R_type) || (opcode === opcodeT.S_type) || (opcode === opcodeT.B_type)){check_rs2 := 1.U}
     .otherwise{check_rs2 := 0.U}
 
-    when((io.ex_memRd =/= memRdOpT.IDLE) && ((check_rs1 === 1.U) && (io.ex_RD === id_rs1)) || ((check_rs2 === 1.U) && (io.ex_RD === id_rs2))){
+    when((io.ex_memRd =/= memRdOpT.IDLE) && (((check_rs1 === 1.U) && (io.ex_RD === id_rs1)) || ((check_rs2 === 1.U) && (io.ex_RD === id_rs2)))){
         io.if_stall := 1.U
         io.id_stall := 1.U
         io.pcWrite := 0.U
