@@ -24,6 +24,7 @@
  ![CI Pipeline: 03 Multi-Cycle RISC-V Core](https://github.com/tharinduSamare/ADS1_Project_RPTU/actions/workflows/03_multi-cycle_RISC-V_core.yml/badge.svg?event=push)
  ![CI Pipeline: 04 Pipelined RISC-V Core](https://github.com/tharinduSamare/ADS1_Project_RPTU/actions/workflows/04_pipelined_RISC-V_core.yml/badge.svg?event=push)
  ![CI Pipeline: 05 Pipelined RISC-V Core with Forwarding Unit](https://github.com/tharinduSamare/ADS1_Project_RPTU/actions/workflows/05_pipelined_RISC-V_core_hazardDetection.yml/badge.svg?event=push)
+ ![CI Pipeline: 06 BTB](https://github.com/tharinduSamare/ADS1_Project_RPTU/actions/workflows/06_BTB.yml/badge.svg?event=push)
 
 <!--
 [![MIT License][license-shield]][license-url]
