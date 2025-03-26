@@ -24,8 +24,8 @@ class TwoBitPredictor extends Module {
     stateReg := stateReg // default case
     when (io.reset_state === 1.U){
         // Here I define mispredicted signal when reset a way with a new address as below
-        // 1. mispredicted == 0 : branch taken = 1
-        // 2. mispredicted == 1 : branch taken = 0
+        // 1. mispredicted == 0 : branch taken = 0
+        // 2. mispredicted == 1 : branch taken = 1
         when(io.mispredicted === 1.U){
             stateReg := predictorStates.strongTaken
         }
@@ -80,7 +80,7 @@ class TwoBitPredictor extends Module {
 // Each cache line has these fields. [valid_bit | tag | target | prediction]
 // Infact we can consider each of these fields as separate small caches. We use same index to access (read / write) each of these fields simultaneously 
 
-class BTB_way (NSETS: Int) extends Module { // NSETS: number of sets
+class BTB_way (NSETS: Int = 8) extends Module { // NSETS: number of sets
     val BYTE_OFFSET = 2
     val INDEX_WIDTH = log2Ceil(NSETS)
     val TAG_WIDTH = 32 - INDEX_WIDTH - BYTE_OFFSET // ADDR_WIDTH - INDEX_WIDTH - BYTE_OFFSET
@@ -138,7 +138,7 @@ class BTB_way (NSETS: Int) extends Module { // NSETS: number of sets
 
 }
 
-class TwoWayLRU (NSETS: Int) extends  Module{
+class TwoWayLRU (NSETS: Int = 8) extends  Module{
     val io = IO(new Bundle{
         val readSet = Input(UInt(log2Ceil(NSETS).W)) // used to update LRU when read hit
         val readHitWay = Input(UInt(2.W)) // which way was read hit
@@ -161,7 +161,7 @@ class TwoWayLRU (NSETS: Int) extends  Module{
     }
 }
 
-class TwoWayBTB (NSETS: Int) extends Module{
+class TwoWayBTB (NSETS: Int = 8) extends Module{
     val NWAYS = 2
     val BYTE_OFFSET = 2
     val INDEX_WIDTH = log2Ceil(NSETS)
